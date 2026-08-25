@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
@@ -11,3 +12,15 @@ class User(BaseModel):
     email : str
     password : str
     role : users_enum.UserRole
+
+    class CreateUser(BaseModel):
+        name: str
+        email: str
+        password: str
+        role: str
+
+    class UpdateUser(BaseModel):
+        name: Optional[str] = None
+        email: Optional[str] = None
+        password: Optional[str] = None
+
