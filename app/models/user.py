@@ -19,6 +19,19 @@ class User(BaseModel):
         password: str
         role: str
 
+    class LoginUser(BaseModel):
+        email: str
+        password: str
+
+    class Logout(BaseModel):
+        email: str
+
+    class LoginRespone(BaseModel):
+        message: str
+
+    class LogoutRespone(BaseModel):
+        message: str
+
     class UpdateUser(BaseModel):
         name: Optional[str] = None
         email: Optional[str] = None
@@ -29,7 +42,6 @@ class User(BaseModel):
 
     class GetUserInfo(BaseModel):
         id: UUID
-
 
     class CreateUserRespone(BaseModel):
         id: UUID
