@@ -24,3 +24,28 @@ class User(BaseModel):
         email: Optional[str] = None
         password: Optional[str] = None
 
+    class DeleteUser(BaseModel):
+        id: UUID
+
+    class GetUserInfo(BaseModel):
+        id: UUID
+
+
+    class CreateUserRespone(BaseModel):
+        id: UUID
+        name: str
+        email: str
+        role: str
+
+    class UpdateUserRespone(BaseModel):
+        id: UUID
+        name: str
+        email: str
+        role: str
+
+    class GetUserInfoRespone(BaseModel):
+        id: UUID
+        name: str
+        email: str
+        role: str
+
