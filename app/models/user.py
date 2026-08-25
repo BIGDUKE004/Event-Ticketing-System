@@ -1,13 +1,12 @@
-from dataclasses import field
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.models import users_enum
 
 
 class User(BaseModel):
-    id : UUID = field(default_factory=uuid4)
+    id : UUID = Field(default_factory=uuid4)
     name : str
     email : str
     password : str

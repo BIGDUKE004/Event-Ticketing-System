@@ -1,13 +1,14 @@
-from dataclasses import field
 from uuid import uuid4, UUID
-from xmlrpc.client import DateTime
+from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from app.models import payment_status_enum
 
 
 class Payment(BaseModel):
-    id : UUID = field(default_factory=uuid4)
+    id : UUID = Field(default_factory=uuid4)
     booking_id : str
     amount : float
-    payment_status: payment_status.PaymentStatus
-    payment_date: DateTime
+    payment_status: payment_status_enum.PaymentStatus
+    payment_date: datetime
