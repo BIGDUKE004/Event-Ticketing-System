@@ -14,3 +14,4 @@ class Event(BaseModel):
     organizer_id : str
     time : DateTime
     sold_out: bool
+
