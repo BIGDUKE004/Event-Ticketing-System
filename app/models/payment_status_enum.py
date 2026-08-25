@@ -1,6 +1,6 @@
 from enum import Enum
 
-class PaymentStaus(Enum):
+class PaymentStatus(Enum):
     PENDING = "pending"
     SUCCESSFUL = "successful"
     CANCELLED = "cancelled"
