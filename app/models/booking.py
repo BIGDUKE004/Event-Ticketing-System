@@ -32,5 +32,5 @@ class Booking(BaseModel):
         total_amount: Optional[float] = None
 
     class DeleteBooking(BaseModel):
-        id: UUI
+        id: UUID
 
