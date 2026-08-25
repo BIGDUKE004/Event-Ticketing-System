@@ -3,7 +3,7 @@ import unittest
 from fastapi import HTTPException
 
 from app.models.user import User
-from app.routers import auth_service
+from app.services import auth_service
 
 
 class AuthServiceTest(unittest.TestCase):
