@@ -26,3 +26,9 @@ class InMemoryUserRepository(UserRepository):
 
     def get_list_of_user(self):
         return len(self.users)
+
+    def get_user_by_email(self, email: str) -> User:
+        for user in self.users:
+            if user.email == email:
+                return user
+        return None

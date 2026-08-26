@@ -4,14 +4,16 @@ from fastapi import HTTPException
 
 from app.repositories.in_memory_user_repository import InMemoryUserRepository
 from app.models.user import User
+from app.repositories.user_repository import UserRepository
 
 
 class AuthService:
 
-    repository : ClassVar = InMemoryUserRepository()
+    def __init__(self, repository: UserRepository):
+        self.repository = repository
 
     def create_user(self, request : User.CreateUser) -> User.CreateUserRespone:
-        if request.password == "" or request.email == "" or request.role == "" or request.name == "":
+        if request.password == "" or request.email == "" or request.name == "":
             raise HTTPException(status_code=400, detail="All fields are required")
         if len(request.password) < 8:
             raise HTTPException(status_code=400, detail="Password is too short")
@@ -25,9 +27,28 @@ class AuthService:
         response = User.CreateUserRespone(id=user.id, name=user.name, email=user.email, role=user.role,)
         return response
 
+    def login_user(self, request : User.LoginUser) -> User.LoginRespone:
+        if request.password == "" or request.email == "":
+            raise HTTPException(status_code=400, detail="All fields are required")
+        user : User = self.repository.get_user_by_email(request.email)
+        if user is not None and user.password == request.password:
+            response = User.LoginRespone(
+                message="login successful"
+            )
+            return response
+        raise HTTPException(status_code=400, detail="Invalid Credentials")
+
+    def logout(self, request: User.Logout) -> User.LogoutRespone:
+        user = self.repository.get_user_by_email(request.email)
+        if user is not None:
+            response = User.LogoutRespone(
+                message="logout successful"
+            )
+            return response
+        raise HTTPException(status_code=400, detail="Email not found")
 
     def update_user(self, request : User.UpdateUser) -> User.UpdateUserRespone:
-        if request.password == "" or request.email == "" or request.role == "" or request.name == "":
+        if request.password == "" or request.email == "" or request.name == "":
             raise HTTPException(status_code=400, detail="All fields are required")
         if len(request.password) < 8:
             raise HTTPException(status_code=400, detail="Password is too short")
@@ -42,17 +63,16 @@ class AuthService:
 
 
     def delete_user(self, request : User.DeleteUser) -> None:
-        for users in self.repository:
-            if users.id != request.id:
-                raise HTTPException(status_code=400, detail="User id is invalid")
+        user : User = self.repository.get_user_by_id(request.id)
+        if user is None:
+            raise HTTPException(status_code=400, detail="User id is invalid")
         self.repository.UserRepository.delete_user(request.id)
 
 
     def get_user_information(self, request : User.GetUserInfo) -> User.GetUserInfoRespone:
-        for users in self.repository:
-            if users.id != request.id:
-                raise HTTPException(status_code=400, detail="User id is invalid")
-        user : User = self.repository.UserRepository.get_user_by_id(request.id)
+        user : User = self.repository.get_user_by_id(request.id)
+        if user is None:
+            raise HTTPException(status_code=400, detail="User id is invalid")
         response = User.GetUserInfoRespone(id=user.id, name=user.name, email=user.email,role=user.role,)
         return response
 
