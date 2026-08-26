@@ -22,5 +22,8 @@ class UserRepository(ABC):
     def get_user_by_id(self, user_id : id) -> user:
         pass
 
+    def get_user_by_email(self, email: str) -> user:
+        pass
+
     def get_list_of_user(self):
         pass
