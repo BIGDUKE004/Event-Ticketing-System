@@ -32,5 +32,36 @@ class Booking(BaseModel):
         total_amount: Optional[float] = None
 
     class DeleteBooking(BaseModel):
-        id: UUID    
+        id: UUID
+
+    class GetBookingInformation(BaseModel):
+        id : str
+
+    class CreateBookingResponse(BaseModel):
+        id : str
+        ticket_type : str
+        user_id: str
+        booking_date: datetime
+        quantity: int
+        status: booking_status.BookingStatus
+
+    class UpdateBookingResponse(BaseModel):
+        id : str
+        ticket_type : str
+        user_id: str
+        booking_date: datetime
+        quantity: int
+        status: booking_status.BookingStatus
+
+    class GetBookingInformationResponse(BaseModel):
+        ticket_type: str
+        booking_date: datetime
+        quantity: int
+        total_amount: float
+        status: booking_status.BookingStatus
+
+    class DeleteBookingResponse(BaseModel):
+        message : str
+
+
 
