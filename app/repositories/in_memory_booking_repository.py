@@ -11,7 +11,7 @@ class InMemoryBookingRepository(BookingRepository):
     def save_booking(self, booking: Booking) -> Booking:
         self.booking_list.append(booking)
 
-    def delete_booking(self, user_id: id) -> Booking:
+    def delete_booking(self, user_id: str) -> Booking:
         for booking in self.booking_list:
             if booking.user_id == user_id:
                 self.booking_list.remove(booking)
@@ -25,7 +25,7 @@ class InMemoryBookingRepository(BookingRepository):
     def get_all_bookings(self) -> List[Booking]:
         return self.booking_list
 
-    def get_booking_information(self, booking_id: int) -> Booking:
+    def get_booking_information(self, booking_id: str) -> Booking:
         for bookings in self.booking_list:
             if bookings.id == booking_id:
                 return bookings

@@ -14,7 +14,7 @@ class BookingRepository(ABC):
         pass
 
     @abstractmethod
-    def delete_booking(self, booking_id : int) -> None:
+    def delete_booking(self, booking_id : str) -> None:
         pass
 
     @abstractmethod
@@ -22,5 +22,5 @@ class BookingRepository(ABC):
         pass
 
     @abstractmethod
-    def get_booking_information(self, booking_id: int) -> Booking:
+    def get_booking_information(self, booking_id: str) -> Booking:
         pass
