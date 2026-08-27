@@ -7,7 +7,7 @@ from app.repositories.in_memory_user_repository import InMemoryUserRepository
 from app.services.auth_service import AuthService
 
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix="/auth", tags=["SignUp/SignIn"])
 
 repository = InMemoryUserRepository()
 service = AuthService(repository)
