@@ -41,7 +41,7 @@ class Booking(BaseModel):
         id: UUID
 
     class GetBookingInformation(BaseModel):
-        id : str
+        id : UUID
 
     class CreateBookingResponse(BaseModel):
         id : str
@@ -65,10 +65,12 @@ class Booking(BaseModel):
         status: booking_status.BookingStatus
 
     class GetBookingInformationResponse(BaseModel):
+        id: str
+        user_id: str
         ticket_type: str
         booking_date: datetime
         quantity: int
-        bookings : list[booking_item.BookingItem]
+        bookings: list[booking_item.BookingItem]
         total_amount: float
         status: booking_status.BookingStatus
 

@@ -23,3 +23,7 @@ class BookingRepository(ABC):
     @abstractmethod
     def get_booking_information(self, booking_id: str) -> Booking:
         pass
+
+    @abstractmethod
+    def find_booking_by_id(self, booking_id : str) -> Booking:
+        pass
