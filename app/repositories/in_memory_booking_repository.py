@@ -16,6 +16,7 @@ class InMemoryBookingRepository(BookingRepository):
         for booking in self.booking_list:
             if booking.user_id == user_id:
                 self.booking_list.remove(booking)
+        return None
 
     def update_booking(self, booking: Booking.UpdateBooking) -> Booking:
         for existing_booking in self.booking_list:
@@ -39,3 +40,4 @@ class InMemoryBookingRepository(BookingRepository):
         for bookings in self.booking_list:
             if str(bookings.id) == booking_id:
                 return bookings
+        return None
