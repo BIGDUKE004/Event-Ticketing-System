@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 
 from app.models.booking import Booking
 from app.repositories.booking_repository import BookingRepository
@@ -12,11 +13,12 @@ class InMemoryBookingRepository(BookingRepository):
         self.booking_list.append(booking)
         return booking
 
-    def delete_booking(self, user_id: str) -> None:
+    def delete_booking(self, booking_id: str) -> None:
         for booking in self.booking_list:
-            if booking.user_id == user_id:
+            if str(booking.id) == booking_id:
                 self.booking_list.remove(booking)
         return None
+
 
     def update_booking(self, booking: Booking.UpdateBooking) -> Booking:
         for existing_booking in self.booking_list:
@@ -36,8 +38,15 @@ class InMemoryBookingRepository(BookingRepository):
     def get_all_bookings(self) -> List[Booking]:
         return self.booking_list
 
-    def get_booking_information(self, booking_id: str) -> Booking:
-        for bookings in self.booking_list:
-            if str(bookings.id) == booking_id:
-                return bookings
+    def find_booking_by_id(self, booking_id: UUID) -> Booking:
+        for booking in self.booking_list:
+            if booking.id == booking_id:
+                return booking
+        return None
+
+    def get_booking_information(self, booking_id: UUID) -> Booking:
+        for booking in self.booking_list:
+            if booking.id == booking_id:
+                return booking
+
         return None

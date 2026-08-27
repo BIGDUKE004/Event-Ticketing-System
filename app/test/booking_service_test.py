@@ -1,8 +1,8 @@
 import unittest
 
-from models import booking_item, booking
-from repositories.in_memory_booking_repository import InMemoryBookingRepository
-from services import booking_service
+from app.models import booking_item, booking
+from app.repositories.in_memory_booking_repository import InMemoryBookingRepository
+from app.services import booking_service
 
 
 class BookingServiceTest(unittest.TestCase):
