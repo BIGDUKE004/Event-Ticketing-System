@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+
 from app.models.booking import Booking
 from app.repositories.booking_repository import BookingRepository
 
@@ -29,6 +31,7 @@ class BookingService:
         return response
 
     def update_booking(self, request: Booking.UpdateBooking) -> Booking.UpdateBookingResponse:
+        # if request.id
         user_booking = Booking.UpdateBooking(
             id=request.id,
             user_id=request.user_id,
@@ -54,6 +57,8 @@ class BookingService:
 
     def delete_booking(self, request: Booking.DeleteBooking) -> Booking.DeleteBookingResponse:
         self.__repository.delete_booking(request.id)
+        if self.__repository.delete_booking(request.id) is None:
+            raise HTTPException(status_code=404, detail="Booking not found")
         response : Booking.DeleteBookingResponse = Booking.DeleteBookingResponse(
             message= "Booking deleted",
         )
@@ -61,6 +66,8 @@ class BookingService:
 
     def get_booking_information(self, request : Booking.GetBookingInformation) -> Booking.GetBookingInformationResponse:
         booking : Booking = self.__repository.get_booking_information(request.id)
+        if booking is None:
+            raise HTTPException(status_code=404, detail="Booking not found")
         response : Booking.GetBookingInformationResponse = Booking.GetBookingInformationResponse(
             id= booking.id,
             ticket_type= booking.ticket_type,
