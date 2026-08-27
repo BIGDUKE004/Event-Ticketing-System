@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from models.booking import Booking
-
+from app.models.booking import Booking
 
 class BookingRepository(ABC):
     @abstractmethod
