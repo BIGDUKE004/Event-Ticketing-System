@@ -22,7 +22,10 @@ class InMemoryUserRepository(UserRepository):
                 return user
 
     def delete_user(self, user_id : id) -> None:
-        self.users.remove(user_id)
+        for user in self.users:
+            if user.id == user_id:
+                self.users.remove(user_id)
+        return None
 
     def get_list_of_user(self):
         return len(self.users)

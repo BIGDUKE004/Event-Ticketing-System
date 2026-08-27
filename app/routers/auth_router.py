@@ -20,7 +20,7 @@ def register(request: User.CreateUser):
 
 @router.post("/login", response_model=User.LoginRespone)
 def login(request: User.LoginUser):
-    return service.login(request)
+    return service.login_user(request)
 
 
 @router.post("/logout", response_model=User.LogoutRespone)

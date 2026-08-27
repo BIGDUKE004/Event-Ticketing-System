@@ -94,3 +94,25 @@ class AuthServiceTest(unittest.TestCase):
         )
         with self.assertRaises(HTTPException) as context:
             service.login_user(user)
+
+    def test_user_logs_in_after_creating_an_account(self):
+        user = User.CreateUser(
+            name= "miracle",
+            email= "omogitbranchalmostwhyneme",
+            password= "gitcollabisactuallyfun",
+            role= "customer",
+        )
+
+        service = auth_service.AuthService(InMemoryUserRepository())
+
+        person : User.CreateUserRespone = service.create_user(user)
+        self.assertEqual(service.get_count(), 1)
+        self.assertEqual(person.name, "miracle")
+
+        customer = User.LoginUser(
+            email= "omogitbranchalmostwhyneme",
+            password= "gitcollabisactuallyfun",
+        )
+
+        consumer : User.LoginRespone = service.login_user(customer)
+        self.assertEqual("login successful", consumer.message)
