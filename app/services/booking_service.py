@@ -47,13 +47,17 @@ class BookingService:
             else:
                 total = total + amount.total_amount * amount.quantity
 
+        total_quantity = 0
+        for quantity in request.bookings:
+            total_quantity += quantity.quantity
+
         user_booking = Booking.UpdateBooking(
             id=request.id,
             user_id=request.user_id,
             event_id=request.event_id,
             ticket_type=request.ticket_type,
             bookings=request.bookings,
-            quantity=request.quantity,
+            quantity=total_quantity,
             total_amount=total
         )
         booking : Booking = self.__repository.update_booking(user_booking)
