@@ -62,11 +62,12 @@ class AuthService:
         return response
 
 
-    def delete_user(self, request : User.DeleteUser) -> None:
+    def delete_user(self, request : User.DeleteUser) -> str:
         user : User = self.repository.get_user_by_id(request.id)
         if user is None:
             raise HTTPException(status_code=400, detail="User id is invalid")
-        self.repository.UserRepository.delete_user(request.id)
+        self.repository.delete_user(request.id)
+        return "Account deleted successfully"
 
 
     def get_user_information(self, request : User.GetUserInfo) -> User.GetUserInfoRespone:
