@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class TicketType(BaseModel):
-    id : uuid.UUID = Field(default=uuid.uuid4)
+    id : uuid.UUID = Field(default_factory=uuid.uuid4)
     event_id : str
     name : str
     price : float

@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from models.ticket import Ticket
-from models.ticket_type import TicketType
 
 
 class TicketService:
@@ -11,9 +10,13 @@ class TicketService:
         self.ticket_type_repository = ticket_type_repository
 
     def create_ticket(self, ticket: Ticket) -> Ticket:
+        try:
+            ticket_type_id = UUID(ticket.ticket_type_id)
+        except ValueError:
+            raise ValueError("Invalid ticket type ID")
 
         ticket_type = self.ticket_type_repository.get_by_id(
-            ticket.ticket_type_id
+            ticket_type_id
         )
 
         if ticket_type is None:
