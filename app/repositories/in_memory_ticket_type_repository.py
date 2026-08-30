@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from models.ticket_type import TicketType
-from repositories.ticket_type_repository import TicketTypeRepository
+from app.models.ticket_type import TicketType
+from app.repositories.ticket_type_repository import TicketTypeRepository
 
 
 class InMemoryTicketTypeRepository(TicketTypeRepository):

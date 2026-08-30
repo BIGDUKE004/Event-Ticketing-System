@@ -3,7 +3,7 @@ from uuid import UUID
 
 from app.models.event import Event, CreateEvent, UpdateEvent
 from app.repositories.event_repository import EventRepository
-from repositories.booking_repository import BookingRepository
+from app.repositories.booking_repository import BookingRepository
 
 
 class EventService:
