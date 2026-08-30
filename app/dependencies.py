@@ -7,8 +7,10 @@ from app.services.auth_service import AuthService
 from app.services.event_service import EventService
 from app.repositories.booking_repository import BookingRepository
 from app.services.booking_service import BookingService
+from app.repositories.in_memory_user_repository import InMemoryUserRepository
 
 _repository = InMemoryEventRepository()
+_auth_repository = InMemoryUserRepository()
 
 def get_event_repository() -> EventRepository:
     return _repository
@@ -19,7 +21,7 @@ def get_event_service(
     return EventService(repository)
 
 def get_user_repository() -> UserRepository:
-    return _repository
+    return _auth_repository
 
 def get_user_service(
         repository: UserRepository = Depends(get_user_repository)
