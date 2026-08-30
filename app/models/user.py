@@ -40,6 +40,9 @@ class User(BaseModel):
     class DeleteUser(BaseModel):
         id: UUID
 
+    class DeleteUserResponse(BaseModel):
+        message: str
+
     class GetUserInfo(BaseModel):
         id: UUID
 

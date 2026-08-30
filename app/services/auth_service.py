@@ -1,4 +1,5 @@
 from typing import ClassVar
+from uuid import UUID
 
 from fastapi import HTTPException
 
@@ -62,16 +63,17 @@ class AuthService:
         return response
 
 
-    def delete_user(self, request : User.DeleteUser) -> str:
-        user : User = self.repository.get_user_by_id(request.id)
+    def delete_user(self, user_id : UUID) -> User.DeleteUserResponse:
+        user : User = self.repository.get_user_by_id(user_id)
         if user is None:
             raise HTTPException(status_code=400, detail="User id is invalid")
-        self.repository.delete_user(request.id)
-        return "Account deleted successfully"
+        self.repository.delete_user(user)
+        response = User.DeleteUserResponse(message="Account deleted successfully")
+        return response
 
 
-    def get_user_information(self, request : User.GetUserInfo) -> User.GetUserInfoRespone:
-        user : User = self.repository.get_user_by_id(request.id)
+    def get_user_information(self, user_id : UUID) -> User.GetUserInfoRespone:
+        user : User = self.repository.get_user_by_id(user_id)
         if user is None:
             raise HTTPException(status_code=400, detail="User id is invalid")
         response = User.GetUserInfoRespone(id=user.id, name=user.name, email=user.email,role=user.role,)
