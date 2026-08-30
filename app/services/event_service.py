@@ -3,11 +3,13 @@ from uuid import UUID
 
 from app.models.event import Event, CreateEvent, UpdateEvent
 from app.repositories.event_repository import EventRepository
+from repositories.booking_repository import BookingRepository
 
 
 class EventService:
-    def __init__(self, repository: EventRepository):
+    def __init__(self, repository: EventRepository, booking_repository: BookingRepository):
         self.__repository = repository
+        self.__booking_repository = booking_repository
 
     def create_event(self, payload: CreateEvent,organizer_id: str) -> Event:
         event = Event(name=payload.name, description=payload.description, location=payload.location, organizer_id=organizer_id)
@@ -48,4 +50,18 @@ class EventService:
                 found_events.append(event)
         return found_events
 
+    def get_total_tickets_sold(self, event_id: UUID) -> int:
+        bookings = self.__booking_repository.get_all_bookings()
+        number_of_tickets_sold = 0
+        for booking in bookings:
+            if booking.event_id == event_id:
+                number_of_tickets_sold += booking.quantity
+        return number_of_tickets_sold
 
+    def get_total_amount_made(self, event_id: UUID) -> float:
+        bookings = self.__booking_repository.get_all_bookings()
+        total_amount_made = 0.0
+        for booking in bookings:
+            if booking.event_id == event_id:
+                total_amount_made += booking.total_amount
+        return total_amount_made

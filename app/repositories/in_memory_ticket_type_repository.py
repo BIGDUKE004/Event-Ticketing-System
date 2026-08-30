@@ -1,27 +1,35 @@
-from abc import ABC, abstractmethod
 from uuid import UUID
 
 from models.ticket_type import TicketType
+from repositories.ticket_type_repository import TicketTypeRepository
 
 
-class TicketTypeRepository(ABC):
+class InMemoryTicketTypeRepository(TicketTypeRepository):
 
-    @abstractmethod
+    def __init__(self):
+        self.ticket_types: dict[UUID, TicketType] = {}
+
     def create(self, ticket_type: TicketType) -> TicketType:
-        pass
+        self.ticket_types[ticket_type.id] = ticket_type
+        return ticket_type
 
-    @abstractmethod
     def get_by_id(self, ticket_type_id: UUID) -> TicketType | None:
-        pass
+        return self.ticket_types.get(ticket_type_id)
 
-    @abstractmethod
     def get_by_event_id(self, event_id: str) -> list[TicketType]:
-        pass
+        return [
+            ticket_type
+            for ticket_type in self.ticket_types.values()
+            if ticket_type.event_id == event_id
+        ]
 
-    @abstractmethod
     def update(self, ticket_type: TicketType) -> TicketType:
-        pass
+        self.ticket_types[ticket_type.id] = ticket_type
+        return ticket_type
 
-    @abstractmethod
     def delete(self, ticket_type_id: UUID) -> bool:
-        pass
+        if ticket_type_id in self.ticket_types:
+            del self.ticket_types[ticket_type_id]
+            return True
+
+        return False
