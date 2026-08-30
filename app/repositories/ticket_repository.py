@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
 
-from models.ticket import Ticket
+from app.models.ticket import Ticket
 
 
 class TicketRepository(ABC):

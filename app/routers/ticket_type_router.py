@@ -2,9 +2,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from dependencies import get_ticket_type_service
-from models.ticket_type import TicketType
-from services.ticket_type_service import TicketTypeService
+from app.dependencies import get_ticket_type_service
+from app.models.ticket_type import TicketType
+from app.services.ticket_type_service import TicketTypeService
 
 
 router = APIRouter(
