@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from models.ticket_type import TicketType
+from app.models.ticket_type import TicketType
 
 
 class TicketTypeService:
