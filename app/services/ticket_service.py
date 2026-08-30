@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from models.ticket import Ticket
+from app.models.ticket import Ticket
 
 
 class TicketService:

@@ -2,21 +2,7 @@ from datetime import datetime, timezone
 from typing import Optional
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field
-
-class Event(BaseModel):
-    id: UUID = Field(default_factory=uuid4)
-    name: str
-    description: str
-    location: str
-    organizer_id: str
-    sold_out: bool = False
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
-    )
-    updated_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
-    )
+from pydantic import BaseModel, ConfigDict
 
 
 class CreateEvent(BaseModel):
@@ -30,3 +16,14 @@ class UpdateEvent(BaseModel):
     description: Optional[str] = None
     location: Optional[str] = None
 
+class EventResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    name: str
+    description: str
+    location: str
+    organizer_id: str
+    sold_out: bool
+    created_at: datetime
+    updated_at: datetime
