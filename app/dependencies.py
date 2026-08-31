@@ -47,8 +47,6 @@ def get_user_service(
 
 
 
-
-
 def get_booking_service(
         repository: BookingRepository = Depends(get_booking_repository)
 ) -> BookingService:
