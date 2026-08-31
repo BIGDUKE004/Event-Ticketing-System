@@ -19,7 +19,10 @@ class SQLEventRepository(EventRepository):
         return event
 
     def get(self, event_id: UUID) -> Optional[EventModel]:
-        return self.db.query(EventModel).filter(EventModel.id == str(event_id)).first()
+        event = self.db.query(EventModel).filter(EventModel.id == str(event_id)).first()
+        if event is None:
+            return None
+        return event
 
     def update(self, event_id: UUID, data: dict) -> Optional[EventModel]:
         event = self.get(event_id)

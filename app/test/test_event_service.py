@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 import pytest
 from app.models.event import CreateEvent, UpdateEvent
-from app.repositories.in_memory_event_repository import InMemoryEventRepository
+from app.repositories.SQLEventRepository import SQLEventRepository
 from app.services.event_service import EventService
 
 @pytest.fixture

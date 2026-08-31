@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, List
 from uuid import UUID
 
-from app.models.payment import Payment
+from app.database_models.payment import Payment
 
 
 class PaymentRepository(ABC):

@@ -1,16 +1,18 @@
+from enum import Enum
+from datetime import datetime
 from uuid import uuid4, UUID
-from datetime import datetime, timezone
 
-from pydantic import BaseModel, Field
-
-from app.models import payment_status_enum
+from pydantic import BaseModel, Field, ConfigDict
 
 
-class Payment(BaseModel):
-    id : UUID = Field(default_factory=uuid4)
-    booking_id : str
+class CreatePayment(BaseModel):
+    booking_id : UUID
     amount : float
-    payment_status: payment_status_enum.PaymentStatus
-    payment_date: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
-    )
+
+class PaymentResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: UUID
+    booking_id: UUID
+    amount: float
+    payment_status: Enum
+    payment_date: datetime

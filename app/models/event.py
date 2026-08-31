@@ -2,13 +2,13 @@ from datetime import datetime, timezone
 from typing import Optional
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CreateEvent(BaseModel):
-    name: str
-    description: str
-    location: str
+    name: str = Field(min_length=1)
+    description: str = Field(min_length=1)
+    location: str = Field(min_length=1)
     organizer_id: str
 
 class UpdateEvent(BaseModel):
@@ -18,7 +18,6 @@ class UpdateEvent(BaseModel):
 
 class EventResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-
     id: UUID
     name: str
     description: str
