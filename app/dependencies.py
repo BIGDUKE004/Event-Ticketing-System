@@ -9,16 +9,15 @@ from app.services.event_service import EventService
 from app.repositories.booking_repository import BookingRepository
 from app.services.booking_service import BookingService
 from app.repositories.SQLEventRepository import SQLEventRepository
-from app.repositories.in_memory_ticket_repository import InMemoryTicketRepository
+from app.repositories.SQLTicketRepository import SQLTicketRepository
 from app.services.ticket_service import TicketService
-from app.repositories.in_memory_ticket_type_repository import InMemoryTicketTypeRepository
+from app.repositories.SQLTicketTypeRepository import SQLTicketTypeRepository
 from app.services.ticket_type_service import TicketTypeService
 from app.database import get_db
 from app.repositories.in_memory_booking_repository import InMemoryBookingRepository
 from app.repositories.SQLUserRepository import SQLUserRepository
 
-_ticket_repository = InMemoryTicketRepository()
-_ticket_type_repository = InMemoryTicketTypeRepository()
+
 _booking_repository = InMemoryBookingRepository()
 
 
@@ -55,18 +54,28 @@ def get_booking_service(
 ) -> BookingService:
     return BookingService(repository)
 
-def get_ticket_repository() -> InMemoryTicketRepository:
-    return _ticket_repository
+def get_ticket_repository(
+    db: Session = Depends(get_db)
+) -> SQLTicketRepository:
 
+    return SQLTicketRepository(db)
 
-def get_ticket_type_repository() -> InMemoryTicketTypeRepository:
-    return _ticket_type_repository
+def get_ticket_type_repository(
+    db: Session = Depends(get_db)
+) -> SQLTicketTypeRepository:
+
+    return SQLTicketTypeRepository(db)
 
 
 def get_ticket_service(
-    ticket_repository: InMemoryTicketRepository = Depends(get_ticket_repository),
-    ticket_type_repository: InMemoryTicketTypeRepository = Depends(get_ticket_type_repository),
+    ticket_repository: SQLTicketRepository = Depends(
+        get_ticket_repository
+    ),
+    ticket_type_repository: SQLTicketTypeRepository = Depends(
+        get_ticket_type_repository
+    ),
 ) -> TicketService:
+
     return TicketService(
         ticket_repository=ticket_repository,
         ticket_type_repository=ticket_type_repository,
@@ -74,9 +83,12 @@ def get_ticket_service(
 
 
 def get_ticket_type_service(
-    ticket_type_repository: InMemoryTicketTypeRepository = Depends(get_ticket_type_repository),
+    ticket_type_repository: SQLTicketTypeRepository = Depends(
+        get_ticket_type_repository
+    ),
 ) -> TicketTypeService:
+
     return TicketTypeService(
-        repository=ticket_type_repository,
+        repository=ticket_type_repository
     )
 
