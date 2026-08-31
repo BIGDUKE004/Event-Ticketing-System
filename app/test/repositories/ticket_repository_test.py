@@ -1,6 +1,6 @@
 import uuid
 
-from models.ticket import Ticket
+from app.models.ticket import Ticket
 from repositories.in_memory_ticket_repository import (InMemoryTicketRepository)
 
 
