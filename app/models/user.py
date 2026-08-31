@@ -2,65 +2,59 @@ from typing import Optional
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
+from sqlalchemy.engine import default
 
 from app.models import users_enum
 
+class CreateUser(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: str
+    isLoggedIn: bool = False
 
-class User(BaseModel):
-    id : UUID = Field(default_factory=uuid4)
-    name : str
-    email : str
-    password : str
-    role : users_enum.UserRole
+class LoginUser(BaseModel):
+    email: str
+    password: str
 
-    class CreateUser(BaseModel):
-        name: str
-        email: str
-        password: str
-        role: str
+class Logout(BaseModel):
+    email: str
 
-    class LoginUser(BaseModel):
-        email: str
-        password: str
+class LoginRespone(BaseModel):
+    message: str
 
-    class Logout(BaseModel):
-        email: str
+class LogoutRespone(BaseModel):
+    message: str
 
-    class LoginRespone(BaseModel):
-        message: str
+class UpdateUser(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
 
-    class LogoutRespone(BaseModel):
-        message: str
+class DeleteUser(BaseModel):
+    id: UUID
 
-    class UpdateUser(BaseModel):
-        name: Optional[str] = None
-        email: Optional[str] = None
-        password: Optional[str] = None
+class DeleteUserResponse(BaseModel):
+    message: str
 
-    class DeleteUser(BaseModel):
-        id: UUID
+class GetUserInfo(BaseModel):
+    id: UUID
 
-    class DeleteUserResponse(BaseModel):
-        message: str
+class CreateUserRespone(BaseModel):
+    id: UUID
+    name: str
+    email: str
+    role: str
 
-    class GetUserInfo(BaseModel):
-        id: UUID
+class UpdateUserRespone(BaseModel):
+    id: UUID
+    name: str
+    email: str
+    role: str
 
-    class CreateUserRespone(BaseModel):
-        id: UUID
-        name: str
-        email: str
-        role: str
-
-    class UpdateUserRespone(BaseModel):
-        id: UUID
-        name: str
-        email: str
-        role: str
-
-    class GetUserInfoRespone(BaseModel):
-        id: UUID
-        name: str
-        email: str
-        role: str
+class GetUserInfoRespone(BaseModel):
+    id: UUID
+    name: str
+    email: str
+    role: str
 

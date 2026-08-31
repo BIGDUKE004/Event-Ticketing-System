@@ -15,9 +15,11 @@ from app.repositories.SQLTicketTypeRepository import SQLTicketTypeRepository
 from app.services.ticket_type_service import TicketTypeService
 from app.database import get_db
 from app.repositories.in_memory_booking_repository import InMemoryBookingRepository
+from app.repositories.SQLUserRepository import SQLUserRepository
 
 
 _booking_repository = InMemoryBookingRepository()
+
 
 def get_event_repository(
     db: Session = Depends(get_db)
@@ -36,12 +38,13 @@ def get_event_service(
 
 
 
-def get_user_repository() -> UserRepository:
-    return _repository
+def get_user_repository(db: Session = Depends(get_db)) -> SQLUserRepository:
+    return SQLUserRepository(db)
 
 def get_user_service(
-        repository: UserRepository = Depends(get_user_repository)
+       db: Session = Depends(get_db),  user_repository: UserRepository = Depends(get_user_repository)
 ) -> AuthService:
+    repository = SQLUserRepository(db)
     return AuthService(repository)
 
 

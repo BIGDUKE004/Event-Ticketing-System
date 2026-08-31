@@ -13,7 +13,7 @@ username = os.getenv("username")
 password = os.getenv("password")
 database_name = os.getenv("database_name")
 
-SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{"Praise28"}:{quote_plus("12345678")}@localhost/{database_name}'
+SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{username}:{quote_plus(password)}@localhost/{database_name}'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URI)
 
