@@ -1,0 +1,1 @@
+CREATE DATABASE Event_Ticketting_System

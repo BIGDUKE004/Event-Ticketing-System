@@ -1,8 +1,19 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import declarative_base
 
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://Tosin:Pamilerin4195#@localhost/event_ticketing_system'
+from urllib.parse import quote_plus
+from dotenv import load_dotenv
+
+load_dotenv()
+
+username = os.getenv("username")
+password = os.getenv("password")
+database_name = os.getenv("database_name")
+
+SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{"Praise28"}:{quote_plus("12345678")}@localhost/{database_name}'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URI)
 
