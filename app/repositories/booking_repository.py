@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from app.models.booking import Booking
-from app.database_models impir
 
 class BookingRepository(ABC):
     @abstractmethod
