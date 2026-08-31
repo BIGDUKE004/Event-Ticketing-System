@@ -14,8 +14,7 @@ class EventService:
 
     def create_event(self, payload: CreateEvent,organizer_id: str) -> EventModel:
         event = EventModel(name=payload.name, description=payload.description, location=payload.location, organizer_id=organizer_id)
-        if len(payload.name) == 0:
-            raise ValueError("Event name cannot be empty")
+
         if len(payload.name.strip()) == 0:
             raise ValueError("Event name cannot be blank")
 

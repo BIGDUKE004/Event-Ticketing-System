@@ -3,11 +3,11 @@ from uuid import UUID
 
 from pydantic import Field
 
-from models.payment import Payment
-from models.payment_status_enum import PaymentStatus
-from repositories import booking_repository
-from repositories.booking_repository import BookingRepository
-from repositories.payment_repository import PaymentRepository
+from app.models.payment import CreatePayment
+from app.database_models.payment import Payment
+from app.models.payment_status_enum import PaymentStatus
+from app.repositories.booking_repository import BookingRepository
+from app.repositories.payment_repository import PaymentRepository
 
 
 class PaymentService:
@@ -15,16 +15,29 @@ class PaymentService:
         self.__repository = repository
         self.__booking_repository = booking_repository
 
-    def process_payment(self, booking_id: UUID, amount_paid: float):
-        booking = self.__booking_repository.get_booking_information(booking_id)
-        if booking.total_amount > amount_paid:
+    def process_payment(self, payload: CreatePayment):
+        booking = self.__booking_repository.get_booking_information(str(payload.booking_id))
+        if booking.total_amount > payload.amount:
             raise ValueError("Insufficient funds")
 
         payment = Payment(
-            booking_id=booking_id,
-            amount=amount_paid,
-            payment_status=PaymentStatus.SUCCESSFUL,
+            booking_id=payload.booking_id,
+            amount=payload.amount,
+            payment_status=PaymentStatus.SUCCESSFUL
         )
         self.__repository.add(payment)
         return "payment successful"
+
+    def get_all_payments(self):
+        return self.__repository.get_all()
+
+    def get_booking_payment(self, booking_id: UUID):
+        payments = self.get_all_payments()
+        for payment in payments:
+            if payment.booking_id == booking_id:
+                return payment
+
+
+
+
 
