@@ -1,7 +1,8 @@
 from typing import List
 from uuid import UUID
 
-from app.models.event import Event, CreateEvent, UpdateEvent
+from app.models.event import CreateEvent, UpdateEvent
+from app.database_models.event import Event as EventModel
 from app.repositories.event_repository import EventRepository
 from app.repositories.booking_repository import BookingRepository
 
@@ -11,8 +12,8 @@ class EventService:
         self.__repository = repository
         self.__booking_repository = booking_repository
 
-    def create_event(self, payload: CreateEvent,organizer_id: str) -> Event:
-        event = Event(name=payload.name, description=payload.description, location=payload.location, organizer_id=organizer_id)
+    def create_event(self, payload: CreateEvent,organizer_id: str) -> EventModel:
+        event = EventModel(name=payload.name, description=payload.description, location=payload.location, organizer_id=organizer_id)
         if len(payload.name) == 0:
             raise ValueError("Event name cannot be empty")
         if len(payload.name.strip()) == 0:
@@ -20,20 +21,20 @@ class EventService:
 
         return self.__repository.add(event)
 
-    def update_event(self, event_id: UUID, payload: UpdateEvent) -> Event:
+    def update_event(self, event_id: UUID, payload: UpdateEvent) -> EventModel:
         data = payload.model_dump(exclude_unset=True)
         event = self.__repository.update(event_id, data)
         if event is None:
             raise ValueError("No such event found")
         return event
 
-    def find_event(self, event_id: UUID) -> Event:
+    def find_event(self, event_id: UUID) -> EventModel:
         event = self.__repository.get(event_id)
         if event is None:
             raise ValueError("Event does not exist")
         return event
 
-    def get_all_event(self) -> List[Event]:
+    def get_all_event(self) -> List[EventModel]:
         return self.__repository.get_all()
 
     def delete_event(self, event_id: UUID) -> None:
@@ -42,7 +43,7 @@ class EventService:
             raise ValueError("Event does not exist")
         self.__repository.delete(event_id)
 
-    def search_events(self, keyword: str) -> List[Event]:
+    def search_events(self, keyword: str) -> List[EventModel]:
         events = self.get_all_event()
         found_events = []
         for event in events:
