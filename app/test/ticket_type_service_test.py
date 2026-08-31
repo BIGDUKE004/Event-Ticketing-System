@@ -66,9 +66,9 @@ def test_get_ticket_type_returns_none_when_not_found():
 def test_get_ticket_types_by_event():
     service, repository = create_service()
 
-    vip = create_ticket_type(
+    biggest_bird = create_ticket_type(
         event_id="event-123",
-        name="VIP"
+        name="Biggest bird"
     )
 
     regular = create_ticket_type(
@@ -76,21 +76,21 @@ def test_get_ticket_types_by_event():
         name="Regular"
     )
 
-    other = create_ticket_type(
+    early_bird = create_ticket_type(
         event_id="event-456",
-        name="VIP"
+        name="Early bird"
     )
 
-    repository.create(vip)
+    repository.create(biggest_bird)
     repository.create(regular)
-    repository.create(other)
+    repository.create(early_bird)
 
     result = service.get_ticket_types_by_event("event-123")
 
     assert len(result) == 2
-    assert vip in result
+    assert biggest_bird in result
     assert regular in result
-    assert other not in result
+    assert early_bird not in result
 
 
 def test_update_ticket_type():
@@ -103,7 +103,7 @@ def test_update_ticket_type():
     updated_ticket_type = TicketType(
         id=ticket_type.id,
         event_id=ticket_type.event_id,
-        name="VVIP",
+        name="Odogwu",
         price=75000,
         quantity=ticket_type.quantity,
         available_quantity=ticket_type.available_quantity,
@@ -113,7 +113,7 @@ def test_update_ticket_type():
     result = service.update_ticket_type(updated_ticket_type)
 
     assert result == updated_ticket_type
-    assert result.name == "VVIP"
+    assert result.name == "Odogwu"
     assert result.price == 75000
 
 
