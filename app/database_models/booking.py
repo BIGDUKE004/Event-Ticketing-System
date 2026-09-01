@@ -8,7 +8,6 @@ from app.database import Base
 from app.models import booking_status
 from app.database_models.booking_item import BookingItem
 
-
 class Booking(Base):
     __tablename__ = "booking"
 
@@ -28,12 +27,6 @@ class Booking(Base):
     event_id: Mapped[str] = mapped_column(
         String(36),
         ForeignKey("event.id"),
-        nullable=False,
-    )
-
-    ticket_type: Mapped[str] = mapped_column(
-        String(36),
-        ForeignKey("ticket_types.id"),
         nullable=False,
     )
 
