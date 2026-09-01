@@ -1,11 +1,7 @@
-from typing import ClassVar
-from uuid import UUID
-
 from fastapi import HTTPException
 
 from app.models.user import *
 from app.repositories.user_repository import UserRepository
-from app.database_models.user import User
 from app.database_models.user import User
 
 

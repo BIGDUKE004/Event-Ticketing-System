@@ -1,37 +1,41 @@
 import uuid
 
-from sqlalchemy import Column, Integer, String, Float
-from sqlalchemy.orm import Mapped, relationship
-from sqlalchemy.testing.schema import mapped_column
+from sqlalchemy import Integer, String, Float, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
 
-from database import Base
-from database_models.booking import Booking
+from app.database import Base
 
 
 class BookingItem(Base):
-    __tablename__ = 'booking_item'
-    ticket_type_id = Column(
-        Integer,
+    __tablename__ = "booking_item"
+
+    id: Mapped[str] = mapped_column(
+        String(36),
         primary_key=True,
-        default=uuid.uuid4,
-        unique=True,
+        default=lambda: str(uuid.uuid4()),
         nullable=False
     )
 
-    quantity : Mapped[str] = mapped_column(
+    booking_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("booking.id"),
+        nullable=False
+    )
+
+    ticket_type_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("ticket_types.id"),
+        nullable=False
+    )
+
+    quantity: Mapped[int] = mapped_column(
+        Integer,
         default=0,
         nullable=False
     )
 
-    total_amount : Mapped[float] = mapped_column(
+    total_amount: Mapped[float] = mapped_column(
         Float,
         default=0,
         nullable=False
     )
-
-    booking: Mapped["Booking"] = relationship(
-        "Booking",
-        back_populates="bookings"
-    )
-
