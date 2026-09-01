@@ -2,16 +2,17 @@
 from fastapi import HTTPException
 
 from app.database_models.booking import Booking
+from app.models.booking import Booking as model_booking
 from app.database_models.booking_item import BookingItem
 from app.repositories.booking_repository import BookingRepository
 from app.models import booking_status
-
+from app.models import booking_item as model_booking_item
 
 class BookingService:
     def __init__(self, repository : BookingRepository):
         self.__repository = repository
 
-    def add_booking(self, request: Booking) -> Booking:
+    def add_booking(self, request: Booking) -> model_booking.CreateBookingResponse:
         total = 0
         for amount in request.bookings:
             if amount.total_amount == 0:
@@ -30,27 +31,30 @@ class BookingService:
         user_booking = Booking(
             user_id= request.user_id,
             event_id= request.event_id,
-            ticket_type= request.ticket_type,
             bookings= booking_items,
             quantity= request.quantity,
             total_amount= total,
             status= booking_status.BookingStatus.PENDING
         )
-        booking : Booking = self.__repository.save_booking(user_booking)
-        response : Booking.CreateBookingResponse = Booking.CreateBookingResponse(
+        booking : model_booking.CreateBookingResponse = self.__repository.save_booking(user_booking)
+
+        converted_bookings = []
+        for item in booking.bookings:
+            converted_item = model_booking_item.BookingItem.model_validate(item)
+            converted_bookings.append(converted_item)
+
+        response : model_booking.CreateBookingResponse = model_booking.CreateBookingResponse(
             id= str(booking.id),
-            ticket_type= booking.ticket_type,
             user_id= booking.user_id,
             booking_date= booking.booking_date,
-            bookings= booking.bookings,
+            bookings= converted_bookings,
             quantity= booking.quantity,
             status= booking.status,
             total_amount=booking.total_amount,
         )
         return response
 
-    def update_booking(self, request: Booking) -> Booking:
-
+    def update_booking(self, request: Booking) -> model_booking.UpdateBookingResponse:
         total = 0
         for amount in request.bookings:
             if amount.total_amount == 0:
@@ -62,23 +66,26 @@ class BookingService:
         for quantity in request.bookings:
             total_quantity += quantity.quantity
 
-        user_booking = Booking.UpdateBooking(
+        user_booking  = Booking(
             id=request.id,
             user_id=request.user_id,
             event_id=request.event_id,
-            ticket_type=request.ticket_type,
             bookings=request.bookings,
             quantity=total_quantity,
             total_amount=total
         )
-        booking : Booking = self.__repository.update_booking(user_booking)
-        response = Booking.UpdateBookingResponse = Booking.UpdateBookingResponse(
+
+        booking : model_booking.UpdateBookingResponse = self.__repository.update_booking(user_booking)
+        converted_bookings = []
+        for item in booking.bookings:
+            converted_item = model_booking_item.BookingItem.model_validate(item)
+            converted_bookings.append(converted_item)
+        response = model_booking.UpdateBookingResponse = model_booking.UpdateBookingResponse(
             id=str(booking.id),
-            ticket_type=booking.ticket_type,
             user_id=booking.user_id,
             event_id=booking.event_id,
             booking_date=booking.booking_date,
-            bookings=booking.bookings,
+            bookings=converted_bookings,
             quantity=booking.quantity,
             total_amount=booking.total_amount,
             status=booking.status
@@ -91,10 +98,10 @@ class BookingService:
         else:
             self.__repository.delete_booking(request.id)
 
-        response : Booking.DeleteBookingResponse = Booking.DeleteBookingResponse(
+        response : model_booking.DeleteBookingResponse = model_booking.DeleteBookingResponse(
             message= "Booking deleted",
         )
-        return response
+        return response.message
 
     def get_booking_information(self, request: Booking ) -> Booking:
 
@@ -103,13 +110,16 @@ class BookingService:
         if booking is None:
             raise HTTPException(status_code=404, detail="Booking not found")
 
+        converted_bookings = []
+        for item in booking.bookings:
+            converted_item = model_booking_item.BookingItem.model_validate(item)
+            converted_bookings.append(converted_item)
         response = Booking.GetBookingInformationResponse(
             id=str(booking.id),
-            ticket_type=booking.ticket_type,
             total_amount=booking.total_amount,
             user_id=booking.user_id,
             booking_date=booking.booking_date,
-            bookings=booking.bookings,
+            bookings=converted_bookings,
             quantity=booking.quantity,
             status=booking.status,
         )
