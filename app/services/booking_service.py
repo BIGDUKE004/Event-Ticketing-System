@@ -1,29 +1,40 @@
-from uuid import UUID
 
 from fastapi import HTTPException
 
-from app.models.booking import Booking
+from app.database_models.booking import Booking
+from app.database_models.booking_item import BookingItem
 from app.repositories.booking_repository import BookingRepository
+from app.models import booking_status
 
 
 class BookingService:
     def __init__(self, repository : BookingRepository):
         self.__repository = repository
 
-    def add_booking(self, request: Booking.CreateBooking) -> Booking.CreateBookingResponse:
+    def add_booking(self, request: Booking) -> Booking:
         total = 0
         for amount in request.bookings:
             if amount.total_amount == 0:
                 raise HTTPException("Invalid amount", 400)
             else:
                 total = total + amount.total_amount * amount.quantity
+
+        booking_items = []
+        for item in request.bookings:
+            booking_items.append(BookingItem(
+                ticket_type_id=item.ticket_type_id,
+                quantity=item.quantity,
+                total_amount=item.total_amount
+            )
+            )
         user_booking = Booking(
             user_id= request.user_id,
             event_id= request.event_id,
             ticket_type= request.ticket_type,
-            bookings= request.bookings,
+            bookings= booking_items,
             quantity= request.quantity,
-            total_amount= total
+            total_amount= total,
+            status= booking_status.BookingStatus.PENDING
         )
         booking : Booking = self.__repository.save_booking(user_booking)
         response : Booking.CreateBookingResponse = Booking.CreateBookingResponse(
@@ -38,7 +49,7 @@ class BookingService:
         )
         return response
 
-    def update_booking(self, request: Booking.UpdateBooking) -> Booking.UpdateBookingResponse:
+    def update_booking(self, request: Booking) -> Booking:
 
         total = 0
         for amount in request.bookings:
@@ -74,7 +85,7 @@ class BookingService:
         )
         return response
 
-    def delete_booking(self, request: Booking.DeleteBooking) -> Booking.DeleteBookingResponse:
+    def delete_booking(self, request: Booking) -> str:
         if self.__repository.find_booking_by_id(request.id) == None:
             raise HTTPException(status_code=404, detail="Booking not found")
         else:
@@ -85,7 +96,7 @@ class BookingService:
         )
         return response
 
-    def get_booking_information(self, request: Booking.GetBookingInformation ) -> Booking.GetBookingInformationResponse:
+    def get_booking_information(self, request: Booking ) -> Booking:
 
         booking = self.__repository.get_booking_information(request.id)
 

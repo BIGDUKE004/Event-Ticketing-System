@@ -2,7 +2,6 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.repositories.event_repository import EventRepository
-from app.repositories.payment_repository import PaymentRepository
 from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
 from app.services.event_service import EventService
@@ -15,21 +14,20 @@ from app.services.ticket_service import TicketService
 from app.repositories.SQLTicketTypeRepository import SQLTicketTypeRepository
 from app.services.ticket_type_service import TicketTypeService
 from app.database import get_db
-from app.repositories.in_memory_booking_repository import InMemoryBookingRepository
 from app.repositories.SQLUserRepository import SQLUserRepository
 from app.repositories.SQLPaymentRepository import SQLPaymentRepository
 from app.repositories.payment_repository import PaymentRepository
 from app.services.payment_service import PaymentService
+from app.repositories.SQLBookingRepository import SQLBookingRepository
 
-_booking_repository = InMemoryBookingRepository()
 
 def get_event_repository(
     db: Session = Depends(get_db)
 ) -> EventRepository:
     return SQLEventRepository(db)
 
-def get_booking_repository() -> BookingRepository:
-    return _booking_repository
+def get_booking_repository(db: Session = Depends(get_db)) -> BookingRepository:
+    return SQLBookingRepository(db)
 
 def get_event_service(
     event_repository: EventRepository = Depends(get_event_repository),
@@ -60,8 +58,9 @@ def get_user_service(
 
 
 def get_booking_service(
-        repository: BookingRepository = Depends(get_booking_repository)
+        db: Session = Depends(get_db)
 ) -> BookingService:
+    repository = SQLBookingRepository(db)
     return BookingService(repository)
 
 def get_ticket_repository(
