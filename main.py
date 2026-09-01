@@ -14,7 +14,6 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Event API")
 
 
-
 app.include_router(event_router)
 app.include_router(auth_router)
 app.include_router(router)
