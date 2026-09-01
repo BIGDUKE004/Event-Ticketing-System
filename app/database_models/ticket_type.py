@@ -40,6 +40,7 @@ class TicketTypeDB(Base):
     available_quantity: Mapped[int] = mapped_column(
         Integer,
         nullable=False
+
     )
 
     sold_out: Mapped[bool] = mapped_column(

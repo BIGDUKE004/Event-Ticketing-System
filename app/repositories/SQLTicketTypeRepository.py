@@ -2,7 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from app.models.ticket_type import TicketType
+from app.models.ticket_type import TicketType, UpdateTicketType, CreateTicketType
 from app.database_models.ticket_type import TicketTypeDB
 from app.repositories.ticket_type_repository import TicketTypeRepository
 
@@ -27,6 +27,8 @@ class SQLTicketTypeRepository(TicketTypeRepository):
         self.db.add(db_ticket_type)
         self.db.commit()
         self.db.refresh(db_ticket_type)
+
+        return ticket_type
 
         return ticket_type
 
@@ -77,7 +79,7 @@ class SQLTicketTypeRepository(TicketTypeRepository):
             for ticket_type in db_ticket_types
         ]
 
-    def update(self, ticket_type: TicketType) -> TicketType:
+    def update(self, ticket_type: UpdateTicketType) -> TicketType:
 
         db_ticket_type = self.db.get(
             TicketTypeDB,
