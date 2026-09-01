@@ -8,10 +8,10 @@ from app.database import Base
 
 class Event(Base):
     __tablename__ = 'event'
-    id: Mapped[uuid.UUID] = mapped_column(
+    id: Mapped[str] = mapped_column(
         String(36),
         primary_key=True,
-        default=uuid.uuid4,
+        default=lambda: str(uuid.uuid4()),
         nullable=False
     )
 

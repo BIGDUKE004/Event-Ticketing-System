@@ -1,8 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from app.models.ticket_type import TicketType
 
 
 class CreateEvent(BaseModel):
@@ -26,3 +28,4 @@ class EventResponse(BaseModel):
     sold_out: bool
     created_at: datetime
     updated_at: datetime
+    ticket_types: list[TicketType] = Field(default_factory=list)
