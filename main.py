@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from app.routers.event_router import router as event_router
 from app.routers.auth_router import router as auth_router
 from app.routers.booking_router import router
