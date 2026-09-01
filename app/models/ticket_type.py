@@ -1,7 +1,20 @@
 import uuid
-
+from typing import Optional
 from pydantic import BaseModel, Field
 
+
+
+class CreateTicketType(BaseModel):
+    event_id: str
+    name: str
+    price: float
+    quantity: int
+
+class UpdateTicketType(BaseModel):
+    event_id: Optional[str] = None
+    name: Optional[str] = None
+    price: Optional[float] = None
+    quantity: Optional[int] = None
 
 class TicketType(BaseModel):
     id : uuid.UUID = Field(default_factory=uuid.uuid4)
