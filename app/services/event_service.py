@@ -76,7 +76,7 @@ class EventService:
         bookings = self.__booking_repository.get_all_bookings()
         number_of_tickets_sold = 0
         for booking in bookings:
-            if booking.event_id == event_id:
+            if booking.event_id == str(event_id):
                 number_of_tickets_sold += booking.quantity
         return number_of_tickets_sold
 
@@ -84,6 +84,6 @@ class EventService:
         bookings = self.__booking_repository.get_all_bookings()
         total_amount_made = 0.0
         for booking in bookings:
-            if booking.event_id == event_id:
+            if booking.event_id == str(event_id):
                 total_amount_made += booking.total_amount
         return total_amount_made

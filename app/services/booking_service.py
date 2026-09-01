@@ -1,3 +1,4 @@
+from typing import Optional
 
 from fastapi import HTTPException
 
@@ -7,10 +8,32 @@ from app.database_models.booking_item import BookingItem
 from app.repositories.booking_repository import BookingRepository
 from app.models import booking_status
 from app.models import booking_item as model_booking_item
+from app.models.ticket_type import TicketType
+from app.repositories.ticket_type_repository import TicketTypeRepository
+
 
 class BookingService:
-    def __init__(self, repository : BookingRepository):
+    def __init__(self, repository : BookingRepository, ticket_type_repo : TicketTypeRepository):
         self.__repository = repository
+        self.__ticketTypeRepository = ticket_type_repo
+
+    def reduce_ticket_quantity(self, booking : Booking):
+        for booked_item in booking.bookings:
+            ticket_type : Optional[TicketType]= self.__ticketTypeRepository.get_by_id(booked_item.ticket_type_id)
+
+            if ticket_type is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Ticket type not found"
+                )
+
+            if ticket_type.available_quantity < booked_item.quantity:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Not enough tickets available"
+                )
+
+            ticket_type.available_quantity -= booked_item.quantity
 
     def add_booking(self, request: Booking) -> model_booking.CreateBookingResponse:
         total = 0
@@ -19,6 +42,13 @@ class BookingService:
                 raise HTTPException("Invalid amount", 400)
             else:
                 total = total + amount.total_amount * amount.quantity
+
+        total_quantity = 0
+        for quantity in request.bookings:
+            if quantity.quantity == 0:
+                raise HTTPException("Invalid amount", 400)
+            else:
+                total_quantity = total_quantity + quantity.quantity
 
         booking_items = []
         for item in request.bookings:
@@ -32,11 +62,12 @@ class BookingService:
             user_id= request.user_id,
             event_id= request.event_id,
             bookings= booking_items,
-            quantity= request.quantity,
+            quantity= total_quantity,
             total_amount= total,
             status= booking_status.BookingStatus.PENDING
         )
-        booking : model_booking.CreateBookingResponse = self.__repository.save_booking(user_booking)
+        self.reduce_ticket_quantity(user_booking)
+        booking : Booking = self.__repository.save_booking(user_booking)
 
         converted_bookings = []
         for item in booking.bookings:
