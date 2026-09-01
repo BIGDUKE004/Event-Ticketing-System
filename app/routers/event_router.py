@@ -12,10 +12,10 @@ router = APIRouter(prefix="/events", tags=["Events"])
 @router.post("/", response_model=EventResponse, status_code=status.HTTP_201_CREATED)
 def create_event(
     payload: CreateEvent,
-    organizer_id: str,
+    user_id: UUID,
     service: EventService = Depends(get_event_service),
 ):
-    return service.create_event(payload, organizer_id)
+    return service.create_event(payload, user_id)
 
 
 @router.get("/", response_model=List[EventResponse])
@@ -38,6 +38,27 @@ def find_event(
         return service.find_event(event_id)
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+@router.get("/{event_id}/tickets_sold", response_model=int)
+def get_total_tickets_sold(
+    event_id: UUID,
+    service: EventService = Depends(get_event_service),
+):
+    try:
+        return service.get_total_tickets_sold(event_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@router.get("/{event_id}/amount_made", response_model=float)
+def get_total_amount_made(
+    event_id: UUID,
+    service: EventService = Depends(get_event_service),
+):
+    try:
+        return service.get_total_amount_made(event_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
 
 @router.patch("/{event_id}", response_model=EventResponse)
 def update_event(
