@@ -60,7 +60,7 @@ class AuthService:
             email=request.email,
             password=request.password,
         )
-        self.repository.UserRepository.update_user(user)
+        self.repository.update_user(user)
         response = UpdateUserRespone(id=user.id, name=user.name, email=user.email, role=user.role,)
         return response
 

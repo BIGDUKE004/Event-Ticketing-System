@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.dependencies import get_ticket_type_service
-from app.models.ticket_type import TicketType
+from app.models.ticket_type import TicketType, CreateTicketType, UpdateTicketType
 from app.services.ticket_type_service import TicketTypeService
 
 
@@ -14,7 +14,7 @@ router = APIRouter(
 
 
 @router.post("/", response_model=TicketType)
-def create_ticket_type(ticket_type: TicketType,
+def create_ticket_type(ticket_type: CreateTicketType,
     service: TicketTypeService = Depends(get_ticket_type_service)   ):
     return service.create_ticket_type(ticket_type)
 
@@ -51,7 +51,7 @@ response_model=TicketType
 )
 def update_ticket_type(
     ticket_type_id: UUID,
-    ticket_type: TicketType,
+    ticket_type: UpdateTicketType,
     service: TicketTypeService = Depends(get_ticket_type_service)
 ):
     if ticket_type.id != ticket_type_id:

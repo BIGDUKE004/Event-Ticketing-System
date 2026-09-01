@@ -1,19 +1,22 @@
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
-from app.models.event import CreateEvent, UpdateEvent
+from app.models.event import CreateEvent, UpdateEvent, EventResponse
 from app.database_models.event import Event as EventModel
 from app.repositories.event_repository import EventRepository
 from app.repositories.booking_repository import BookingRepository
+from app.repositories.ticket_type_repository import TicketTypeRepository
 
 
 class EventService:
-    def __init__(self, repository: EventRepository, booking_repository: BookingRepository):
+    def __init__(self, repository: EventRepository, booking_repository: BookingRepository, ticket_type_repository: TicketTypeRepository):
         self.__repository = repository
         self.__booking_repository = booking_repository
+        self.__ticket_type_repository = ticket_type_repository
 
-    def create_event(self, payload: CreateEvent,organizer_id: str) -> EventModel:
-        event = EventModel(name=payload.name, description=payload.description, location=payload.location, organizer_id=organizer_id)
+
+    def create_event(self, payload: CreateEvent,user_id: UUID) -> EventModel:
+        event = EventModel(name=payload.name, description=payload.description, location=payload.location, organizer_id=user_id)
 
         if len(payload.name.strip()) == 0:
             raise ValueError("Event name cannot be blank")
@@ -27,14 +30,33 @@ class EventService:
             raise ValueError("No such event found")
         return event
 
-    def find_event(self, event_id: UUID) -> EventModel:
-        event = self.__repository.get(event_id)
+    def find_event(self, event_id: UUID) -> EventResponse:
+        event : Optional[EventModel] = self.__repository.get(event_id)
         if event is None:
             raise ValueError("Event does not exist")
-        return event
 
-    def get_all_event(self) -> List[EventModel]:
-        return self.__repository.get_all()
+        ticket_types = self.__ticket_type_repository.get_by_event_id(
+            str(event_id)
+        )
+
+        event_response = EventResponse.model_validate(event)
+        event_response.ticket_types = ticket_types
+        return event_response
+
+    def get_all_event(self) -> List[EventResponse]:
+        events : List[EventModel] = self.__repository.get_all()
+        event_responses = []
+
+        for event in events:
+
+            ticket_types = self.__ticket_type_repository.get_by_event_id(
+                str(event.id)
+            )
+
+            event_response = EventResponse.model_validate(event)
+            event_response.ticket_types = ticket_types
+            event_responses.append(event_response)
+        return event_responses
 
     def delete_event(self, event_id: UUID) -> None:
         event = self.find_event(event_id)
