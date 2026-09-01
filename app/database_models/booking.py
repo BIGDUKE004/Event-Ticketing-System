@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 from app.models import booking_status
 from app.database_models.booking_item import BookingItem
-
+BaseModel
 
 class Booking(Base):
     __tablename__ = "booking"
