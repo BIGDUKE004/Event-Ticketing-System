@@ -12,6 +12,7 @@ from app.repositories.SQLEventRepository import SQLEventRepository
 from app.repositories.SQLTicketRepository import SQLTicketRepository
 from app.services.ticket_service import TicketService
 from app.repositories.SQLTicketTypeRepository import SQLTicketTypeRepository
+from app.repositories.ticket_type_repository import TicketTypeRepository
 from app.services.ticket_type_service import TicketTypeService
 from app.database import get_db
 from app.repositories.SQLUserRepository import SQLUserRepository
@@ -29,11 +30,17 @@ def get_event_repository(
 def get_booking_repository(db: Session = Depends(get_db)) -> BookingRepository:
     return SQLBookingRepository(db)
 
+def get_ticket_type_repository(
+    db: Session = Depends(get_db)
+) -> TicketTypeRepository:
+    return SQLTicketTypeRepository(db)
+
 def get_event_service(
     event_repository: EventRepository = Depends(get_event_repository),
-    booking_repository: BookingRepository = Depends(get_booking_repository)
+    booking_repository: BookingRepository = Depends(get_booking_repository),
+    ticket_type_repository: TicketTypeRepository = Depends(get_ticket_type_repository)
 ) -> EventService:
-    return EventService(event_repository, booking_repository)
+    return EventService(event_repository, booking_repository, ticket_type_repository)
 
 def get_payment_repository(
     db: Session = Depends(get_db)
@@ -68,12 +75,6 @@ def get_ticket_repository(
 ) -> SQLTicketRepository:
 
     return SQLTicketRepository(db)
-
-def get_ticket_type_repository(
-    db: Session = Depends(get_db)
-) -> SQLTicketTypeRepository:
-
-    return SQLTicketTypeRepository(db)
 
 
 def get_ticket_service(

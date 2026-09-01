@@ -80,8 +80,7 @@ class SQLTicketTypeRepository(TicketTypeRepository):
     def update(self, ticket_type: TicketType) -> TicketType:
 
         db_ticket_type = self.db.get(
-            TicketTypeDB,
-            ticket_type.id
+            TicketTypeDB.id
         )
 
         if db_ticket_type is None:

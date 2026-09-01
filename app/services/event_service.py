@@ -43,8 +43,20 @@ class EventService:
         event_response.ticket_types = ticket_types
         return event_response
 
-    def get_all_event(self) -> List[EventModel]:
-        return self.__repository.get_all()
+    def get_all_event(self) -> List[EventResponse]:
+        events : List[EventModel] = self.__repository.get_all()
+        event_responses = []
+
+        for event in events:
+
+            ticket_types = self.__ticket_type_repository.get_by_event_id(
+                str(event.id)
+            )
+
+            event_response = EventResponse.model_validate(event)
+            event_response.ticket_types = ticket_types
+            event_responses.append(event_response)
+        return event_responses
 
     def delete_event(self, event_id: UUID) -> None:
         event = self.find_event(event_id)

@@ -11,7 +11,6 @@ class CreateEvent(BaseModel):
     name: str = Field(min_length=1)
     description: str = Field(min_length=1)
     location: str = Field(min_length=1)
-    organizer_id: str
 
 class UpdateEvent(BaseModel):
     name: Optional[str] = None

@@ -32,6 +32,7 @@ class Event(Base):
 
     organizer_id: Mapped[str] = mapped_column(
         String(36),
+        ForeignKey("user.id"),
         nullable=False
     )
 
