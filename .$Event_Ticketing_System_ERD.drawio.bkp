@@ -1,6 +1,6 @@
 <mxfile host="Electron">
   <diagram name="Page-1" id="c6sPm2tjsQdGMS9nxQ51">
-    <mxGraphModel dx="860" dy="1742" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="860" dy="1725" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -46,6 +46,12 @@
         <mxCell id="QMUo0U0KaXo-XcBlFW5B-15" parent="QMUo0U0KaXo-XcBlFW5B-14" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="+ PK : unique id&lt;div&gt;+ FK : booking id&lt;/div&gt;&lt;div&gt;+ FK : ticket id&lt;/div&gt;&lt;div&gt;+ ticket code&lt;/div&gt;" vertex="1">
           <mxGeometry height="80" width="160" y="50" as="geometry" />
         </mxCell>
+        <mxCell id="QMUo0U0KaXo-XcBlFW5B-19" edge="1" parent="1" source="QMUo0U0KaXo-XcBlFW5B-8" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;exitX=1.002;exitY=0.152;exitDx=0;exitDy=0;exitPerimeter=0;" value="">
+          <mxGeometry height="100" relative="1" width="100" as="geometry">
+            <mxPoint x="70" y="-130" as="sourcePoint" />
+            <mxPoint x="70" y="-290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
         <mxCell id="QMUo0U0KaXo-XcBlFW5B-20" edge="1" parent="1" source="QMUo0U0KaXo-XcBlFW5B-8" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" target="QMUo0U0KaXo-XcBlFW5B-4" value="">
           <mxGeometry height="100" relative="1" width="100" as="geometry">
             <mxPoint x="70" y="-130" as="sourcePoint" />
@@ -82,16 +88,10 @@
         <mxCell id="QMUo0U0KaXo-XcBlFW5B-27" parent="QMUo0U0KaXo-XcBlFW5B-26" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="+ PK : unique id&lt;div&gt;+ FK : event id&lt;/div&gt;&lt;div&gt;+ ticketTypeId&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ quantity&lt;/span&gt;&lt;/div&gt;&lt;div&gt;+ totalAmount&lt;/div&gt;" vertex="1">
           <mxGeometry height="100" width="160" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="QMUo0U0KaXo-XcBlFW5B-28" edge="1" parent="1" source="QMUo0U0KaXo-XcBlFW5B-9" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;exitX=1.018;exitY=0.909;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.17;entryDx=0;entryDy=0;entryPerimeter=0;" target="QMUo0U0KaXo-XcBlFW5B-27" value="">
+        <mxCell id="QMUo0U0KaXo-XcBlFW5B-28" edge="1" parent="1" source="QMUo0U0KaXo-XcBlFW5B-9" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;exitX=1.019;exitY=0.915;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.17;entryDx=0;entryDy=0;entryPerimeter=0;" target="QMUo0U0KaXo-XcBlFW5B-27" value="">
           <mxGeometry height="100" relative="1" width="100" as="geometry">
             <mxPoint x="160" y="210" as="sourcePoint" />
             <mxPoint x="260" y="110" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="QMUo0U0KaXo-XcBlFW5B-19" edge="1" parent="1" source="QMUo0U0KaXo-XcBlFW5B-2" style="edgeStyle=entityRelationEdgeStyle;fontSize=12;html=1;endArrow=ERoneToMany;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="QMUo0U0KaXo-XcBlFW5B-9" value="">
-          <mxGeometry height="100" relative="1" width="100" as="geometry">
-            <mxPoint x="70" y="-130" as="sourcePoint" />
-            <mxPoint x="70" y="-290" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
