@@ -15,7 +15,11 @@ def create_event(
     user_id: UUID,
     service: EventService = Depends(get_event_service),
 ):
-    return service.create_event(payload, user_id)
+    try:
+        return service.create_event(payload, user_id)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
 
 
 @router.get("/", response_model=List[EventResponse])

@@ -6,13 +6,15 @@ from app.database_models.event import Event as EventModel
 from app.repositories.event_repository import EventRepository
 from app.repositories.booking_repository import BookingRepository
 from app.repositories.ticket_type_repository import TicketTypeRepository
-
+from app.repositories.user_repository import UserRepository
 
 class EventService:
-    def __init__(self, repository: EventRepository, booking_repository: BookingRepository, ticket_type_repository: TicketTypeRepository):
+    def __init__(self, repository: EventRepository, booking_repository: BookingRepository, ticket_type_repository: TicketTypeRepository,
+                 user_repository: UserRepository):
         self.__repository = repository
         self.__booking_repository = booking_repository
         self.__ticket_type_repository = ticket_type_repository
+        self.__user_repository = user_repository
 
 
     def create_event(self, payload: CreateEvent,user_id: UUID) -> EventModel:
@@ -21,10 +23,26 @@ class EventService:
         if len(payload.name.strip()) == 0:
             raise ValueError("Event name cannot be blank")
 
+        user = self.__user_repository.get_user_by_id(user_id)
+
+        if not user:
+            raise ValueError("User does not exist")
+
+        if not user.isLoggedIn:
+            raise ValueError("User is not logged in")
+
         return self.__repository.add(event)
 
     def update_event(self, event_id: UUID, payload: UpdateEvent) -> EventModel:
         data = payload.model_dump(exclude_unset=True)
+
+        for key, value in data.items():
+            if len(value) == 0:
+                raise ValueError("entry cannot be empty")
+
+            if len(value.strip()) == 0:
+                raise ValueError("entry cannot be blank")
+
         event = self.__repository.update(event_id, data)
         if event is None:
             raise ValueError("No such event found")

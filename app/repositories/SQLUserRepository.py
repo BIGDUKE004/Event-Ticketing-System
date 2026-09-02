@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import text, select
 from sqlalchemy.orm import Session
 
@@ -20,14 +22,14 @@ class SQLUserRepository(UserRepository):
         self.db.refresh(user)
         return user
 
-    def get_user_by_id(self, user_id : id) -> User:
-        user = self.get_user_by_id(user_id)
+    def get_user_by_id(self, user_id : UUID) -> User:
+        user = self.db.query(User).filter(User.id == str(user_id)).first()
         if user is None:
             return None
         return user
 
 
-    def delete_user(self, user_id : id) -> None:
+    def delete_user(self, user_id : UUID) -> None:
         user = self.get_user_by_id(user_id)
         if user is None:
             return None
