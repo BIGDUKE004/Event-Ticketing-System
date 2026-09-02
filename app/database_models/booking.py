@@ -10,7 +10,6 @@ from app.database_models.booking_item import BookingItem
 
 class Booking(Base):
     __tablename__ = "booking"
-
     id: Mapped[uuid.UUID] = mapped_column(
         String(36),
         default=uuid.uuid4,
