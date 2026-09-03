@@ -30,12 +30,9 @@ class SQLTicketTypeRepository(TicketTypeRepository):
 
         return ticket_type
 
-        return ticket_type
 
-    def get_by_id(
-        self,
-        ticket_type_id: UUID
-    ) -> TicketType | None:
+
+    def get_by_id( self, ticket_type_id: UUID) -> TicketType | None:
 
         db_ticket_type = self.db.get(
             TicketTypeDB,
@@ -82,11 +79,12 @@ class SQLTicketTypeRepository(TicketTypeRepository):
     def update(self, ticket_type: UpdateTicketType) -> TicketType:
 
         db_ticket_type = self.db.get(
-            TicketTypeDB.id
+            TicketTypeDB,
+            ticket_type.id
         )
 
         if db_ticket_type is None:
-            return ticket_type
+            return None
 
         db_ticket_type.event_id = ticket_type.event_id
         db_ticket_type.name = ticket_type.name

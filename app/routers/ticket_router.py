@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.dependencies import get_ticket_service
-from app.models.ticket import Ticket
+from app.models.ticket import Ticket, CreateTicket
 from app.services.ticket_service import TicketService
 
 
@@ -15,7 +15,7 @@ router = APIRouter(
 
 @router.post("/", response_model=Ticket)
 def create_ticket(
-    ticket: Ticket,
+    ticket: CreateTicket,
     service: TicketService = Depends(get_ticket_service)
 ):
     try:
