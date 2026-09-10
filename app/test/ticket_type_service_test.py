@@ -1,11 +1,15 @@
 import uuid
 
-import pytest
+from models.ticket_type import (
+    TicketType,
+    CreateTicketType,
+    UpdateTicketType
+)
 
-from models.ticket_type import TicketType
 from repositories.in_memory_ticket_type_repository import (
     InMemoryTicketTypeRepository
 )
+
 from services.ticket_type_service import TicketTypeService
 
 
@@ -25,6 +29,20 @@ def create_ticket_type(
     )
 
 
+def create_ticket_type_data(
+    event_id="event-123",
+    name="VIP",
+    price=50000,
+    quantity=100
+):
+    return CreateTicketType(
+        event_id=event_id,
+        name=name,
+        price=price,
+        quantity=quantity
+    )
+
+
 def create_service():
     repository = InMemoryTicketTypeRepository()
     service = TicketTypeService(repository)
@@ -35,12 +53,20 @@ def create_service():
 def test_create_ticket_type():
     service, repository = create_service()
 
-    ticket_type = create_ticket_type()
+    data = create_ticket_type_data()
 
-    result = service.create_ticket_type(ticket_type)
+    result = service.create_ticket_type(data)
 
-    assert result == ticket_type
-    assert repository.get_by_id(ticket_type.id) == ticket_type
+    assert result.event_id == data.event_id
+    assert result.name == data.name
+    assert result.price == data.price
+    assert result.quantity == data.quantity
+    assert result.available_quantity == data.quantity
+    assert result.sold_out is False
+    assert result.id is not None
+    assert isinstance(result.id, uuid.UUID)
+
+    assert repository.get_by_id(result.id) == result
 
 
 def test_get_ticket_type():
@@ -58,7 +84,9 @@ def test_get_ticket_type():
 def test_get_ticket_type_returns_none_when_not_found():
     service, _ = create_service()
 
-    result = service.get_ticket_type(uuid.uuid4())
+    ticket_type_id = uuid.uuid4()
+
+    result = service.get_ticket_type(ticket_type_id)
 
     assert result is None
 
@@ -100,29 +128,40 @@ def test_update_ticket_type():
 
     repository.create(ticket_type)
 
-    updated_ticket_type = TicketType(
-        id=ticket_type.id,
-        event_id=ticket_type.event_id,
+    update_data = UpdateTicketType(
         name="Odogwu",
-        price=75000,
-        quantity=ticket_type.quantity,
-        available_quantity=ticket_type.available_quantity,
-        sold_out=ticket_type.sold_out
+        price=75000
     )
 
-    result = service.update_ticket_type(updated_ticket_type)
+    result = service.update_ticket_type(
+        ticket_type.id,
+        update_data
+    )
 
-    assert result == updated_ticket_type
+    assert result is not None
+    assert result.id == ticket_type.id
     assert result.name == "Odogwu"
     assert result.price == 75000
+    assert result.event_id == ticket_type.event_id
+    assert result.quantity == ticket_type.quantity
+    assert result.available_quantity == ticket_type.available_quantity
+    assert result.sold_out == ticket_type.sold_out
 
 
 def test_update_non_existing_ticket_type_returns_none():
     service, _ = create_service()
 
-    ticket_type = create_ticket_type()
+    ticket_type_id = uuid.uuid4()
 
-    result = service.update_ticket_type(ticket_type)
+    update_data = UpdateTicketType(
+        name="Odogwu",
+        price=75000
+    )
+
+    result = service.update_ticket_type(
+        ticket_type_id,
+        update_data
+    )
 
     assert result is None
 
@@ -143,6 +182,9 @@ def test_delete_ticket_type():
 def test_delete_non_existing_ticket_type():
     service, _ = create_service()
 
-    result = service.delete_ticket_type(uuid.uuid4())
+    ticket_type_id = uuid.uuid4()
+
+    result = service.delete_ticket_type(ticket_type_id)
 
     assert result is False
+

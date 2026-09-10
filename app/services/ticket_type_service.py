@@ -29,13 +29,28 @@ class TicketTypeService:
     ) -> list[TicketType]:
         return self.repository.get_by_event_id(event_id)
 
-    def update_ticket_type(self, ticket_type: UpdateTicketType) -> TicketType | None:
-        existing_ticket_type = self.repository.get_by_id(ticket_type.id)
+    def update_ticket_type(
+            self, ticket_type_id: UUID,
+            data: UpdateTicketType) -> TicketType | None:
 
-        if existing_ticket_type is None:
+        existing = self.repository.get_by_id(ticket_type_id)
+
+        if existing is None:
             return None
 
-        return self.repository.update(ticket_type)
+        if data.event_id is not None:
+            existing.event_id = data.event_id
+
+        if data.name is not None:
+            existing.name = data.name
+
+        if data.price is not None:
+            existing.price = data.price
+
+        if data.quantity is not None:
+            existing.quantity = data.quantity
+
+        return self.repository.update(existing)
 
     def delete_ticket_type(self, ticket_type_id: UUID) -> bool:
         return self.repository.delete(ticket_type_id)

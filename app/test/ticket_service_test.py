@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from models.ticket import Ticket
+from models.ticket import Ticket, CreateTicket
 from models.ticket_type import TicketType
 from repositories.in_memory_ticket_repository import InMemoryTicketRepository
 from repositories.in_memory_ticket_type_repository import InMemoryTicketTypeRepository
@@ -32,6 +32,18 @@ def create_ticket_type(available_quantity=100):
     )
 
 
+def create_ticket_request(
+    ticket_type_id,
+    booking_id="booking-123",
+    ticket_code="TICKET-001"
+):
+    return CreateTicket(
+        ticket_type_id=str(ticket_type_id),
+        booking_id=booking_id,
+        ticket_code=ticket_code
+    )
+
+
 def create_ticket(
     ticket_type_id,
     booking_id="booking-123",
@@ -51,12 +63,18 @@ def test_create_ticket_works():
 
     ticket_type_repository.create(ticket_type)
 
-    ticket = create_ticket(ticket_type.id)
+    ticket_request = create_ticket_request(ticket_type.id)
 
-    result = service.create_ticket(ticket)
+    result = service.create_ticket(ticket_request)
 
-    assert result == ticket
-    assert ticket_repository.get_by_id(ticket.id) == ticket
+    assert result is not None
+    assert result.booking_id == ticket_request.booking_id
+    assert result.ticket_type_id == ticket_request.ticket_type_id
+    assert result.ticket_code == ticket_request.ticket_code
+
+    stored_ticket = ticket_repository.get_by_id(result.id)
+
+    assert stored_ticket == result
 
 
 def test_create_ticket_decreases_available_quantity():
@@ -68,9 +86,9 @@ def test_create_ticket_decreases_available_quantity():
 
     ticket_type_repository.create(ticket_type)
 
-    ticket = create_ticket(ticket_type.id)
+    ticket_request = create_ticket_request(ticket_type.id)
 
-    service.create_ticket(ticket)
+    service.create_ticket(ticket_request)
 
     updated_ticket_type = ticket_type_repository.get_by_id(
         ticket_type.id
@@ -88,9 +106,9 @@ def test_create_ticket_sets_sold_out_when_ticket_quantity_reaches_zero():
 
     ticket_type_repository.create(ticket_type)
 
-    ticket = create_ticket(ticket_type.id)
+    ticket_request = create_ticket_request(ticket_type.id)
 
-    service.create_ticket(ticket)
+    service.create_ticket(ticket_request)
 
     updated_ticket_type = ticket_type_repository.get_by_id(
         ticket_type.id
@@ -103,13 +121,13 @@ def test_create_ticket_sets_sold_out_when_ticket_quantity_reaches_zero():
 def test_create_ticket_raises_error_when_ticket_type_not_found():
     service, _, _ = create_service()
 
-    ticket = create_ticket(uuid.uuid4())
+    ticket_request = create_ticket_request(uuid.uuid4())
 
     with pytest.raises(
         ValueError,
         match="Ticket type not found"
     ):
-        service.create_ticket(ticket)
+        service.create_ticket(ticket_request)
 
 
 def test_create_ticket_raises_error_when_ticket_type_is_sold_out():
@@ -121,20 +139,20 @@ def test_create_ticket_raises_error_when_ticket_type_is_sold_out():
 
     ticket_type_repository.create(ticket_type)
 
-    ticket = create_ticket(ticket_type.id)
+    ticket_request = create_ticket_request(ticket_type.id)
 
     with pytest.raises(
         ValueError,
         match="Ticket type is sold out"
     ):
-        service.create_ticket(ticket)
+        service.create_ticket(ticket_request)
 
 
 def test_get_ticket_works():
     service, ticket_repository, _ = create_service()
 
     ticket = create_ticket(
-        str(uuid.uuid4())
+        uuid.uuid4()
     )
 
     ticket_repository.create(ticket)
@@ -155,7 +173,7 @@ def test_get_ticket_returns_none_when_not_found():
 def test_get_tickets_by_booking_works():
     service, ticket_repository, _ = create_service()
 
-    ticket_type_id = str(uuid.uuid4())
+    ticket_type_id = uuid.uuid4()
 
     ticket1 = create_ticket(
         ticket_type_id,
@@ -193,7 +211,7 @@ def test_delete_ticket_is_working():
     service, ticket_repository, _ = create_service()
 
     ticket = create_ticket(
-        str(uuid.uuid4())
+        uuid.uuid4()
     )
 
     ticket_repository.create(ticket)

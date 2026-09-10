@@ -7,8 +7,8 @@ from pydantic import BaseModel, Field
 class CreateTicketType(BaseModel):
     event_id: str
     name: str
-    price: float
-    quantity: int
+    price: float = Field(gt=0)
+    quantity: int = Field(gt=0)
 
 class UpdateTicketType(BaseModel):
     event_id: Optional[str] = None

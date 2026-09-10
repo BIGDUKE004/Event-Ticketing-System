@@ -46,21 +46,19 @@ service: TicketTypeService = Depends(get_ticket_type_service)
     return service.get_ticket_types_by_event(event_id)
 
 
-@router.put( "/{ticket_type_id}",
-response_model=TicketType
+@router.put(
+    "/{ticket_type_id}",
+    response_model=TicketType
 )
 def update_ticket_type(
     ticket_type_id: UUID,
     ticket_type: UpdateTicketType,
     service: TicketTypeService = Depends(get_ticket_type_service)
 ):
-    if ticket_type.id != ticket_type_id:
-        raise HTTPException(
-            status_code=400,
-            detail="Ticket type ID does not match URL ID"
-        )
-
-    updated_ticket_type = service.update_ticket_type(ticket_type)
+    updated_ticket_type = service.update_ticket_type(
+        ticket_type_id,
+        ticket_type
+    )
 
     if updated_ticket_type is None:
         raise HTTPException(
