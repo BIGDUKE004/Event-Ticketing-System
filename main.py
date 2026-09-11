@@ -5,14 +5,20 @@ from app.routers.booking_router import router
 from app.routers.payment_router import router as payment_router
 from app.routers.ticket_router import router as ticket_router
 from app.routers.ticket_type_router import router as ticket_type_router
-
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine, get_db
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Event API")
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5500"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(event_router)
 app.include_router(auth_router)
