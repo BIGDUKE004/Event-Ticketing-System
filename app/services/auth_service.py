@@ -16,9 +16,9 @@ class AuthService:
         if len(request.password) < 8:
             raise HTTPException(status_code=400, detail="Password is too short")
         user = User(
-            name=request.name,
-            email=request.email,
-            password=request.password,
+            name=request.name.strip(),
+            email=request.email.strip(),
+            password=request.password.strip(),
             role=request.role,
             isLoggedIn=request.isLoggedIn,
         )
@@ -29,8 +29,8 @@ class AuthService:
     def login_user(self, request : LoginUser) -> LoginRespone:
         if request.password == "" or request.email == "":
             raise HTTPException(status_code=400, detail="All fields are required")
-        user = self.repository.get_user_by_email(request.email)
-        if user is not None and user.password == request.password:
+        user = self.repository.get_user_by_email(request.email.strip())
+        if user is not None and user.password == request.password.strip():
             user.isLoggedIn = True
             self.repository.update_user(user)
             response = LoginRespone(
