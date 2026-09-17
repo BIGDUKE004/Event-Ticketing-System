@@ -1,21 +1,21 @@
 from typing import Optional
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr
 from sqlalchemy.engine import default
 
 from app.models import users_enum
 
 class CreateUser(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     password: str
     role: str
     isLoggedIn: bool = False
 
 class LoginUser(BaseModel):
     email: str
-    password: str
+    password: EmailStr
 
 class Logout(BaseModel):
     email: str
@@ -28,7 +28,7 @@ class LogoutRespone(BaseModel):
 
 class UpdateUser(BaseModel):
     name: Optional[str] = None
-    email: Optional[str] = None
+    email: Optional[EmailStr] = None
     password: Optional[str] = None
 
 class DeleteUser(BaseModel):
