@@ -26,17 +26,14 @@ class AuthService:
         response = CreateUserRespone(id=user.id, name=user.name, email=user.email, role=user.role,)
         return response
 
-    def login_user(self, request : LoginUser) -> LoginRespone:
+    def login_user(self, request: LoginUser) -> LoginRespone:
         if request.password == "" or request.email == "":
             raise HTTPException(status_code=400, detail="All fields are required")
         user = self.repository.get_user_by_email(request.email.strip())
         if user is not None and user.password == request.password.strip():
             user.isLoggedIn = True
             self.repository.update_user(user)
-            response = LoginRespone(
-                message="login successful"
-            )
-            return response
+            return LoginRespone(id=user.id, name=user.name, email=user.email, role=user.role)
         raise HTTPException(status_code=400, detail="Invalid Credentials")
 
     def logout(self, request: Logout) -> LogoutRespone:

@@ -15,13 +15,16 @@ class CreateUser(BaseModel):
 
 class LoginUser(BaseModel):
     email: str
-    password: EmailStr
+    password: str
 
 class Logout(BaseModel):
     email: str
 
 class LoginRespone(BaseModel):
-    message: str
+    id: UUID
+    name: str
+    email: str
+    role: str
 
 class LogoutRespone(BaseModel):
     message: str
