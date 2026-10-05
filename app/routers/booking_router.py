@@ -22,3 +22,7 @@ def get_booking(request: Booking.GetBookingInformation,  service : BookingServic
 @router.delete("/delete_booking", response_model=Booking.DeleteBookingResponse, status_code=status.HTTP_201_CREATED)
 def delete_booking(request: Booking.DeleteBooking,  service : BookingService = Depends(get_booking_service)):
     return service.delete_booking(request)
+
+@router.get("/user/{user_id}", response_model=list[Booking.GetBookingInformationResponse])
+def get_bookings_by_user(user_id: str, service: BookingService = Depends(get_booking_service)):
+    return service.get_bookings_by_user(user_id)

@@ -27,3 +27,7 @@ class BookingRepository(ABC):
     @abstractmethod
     def find_booking_by_id(self, booking_id : str) -> Booking:
         pass
+
+    @abstractmethod
+    def get_bookings_by_user(self, user_id: str) -> List[Booking]:
+        pass
