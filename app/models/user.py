@@ -10,7 +10,6 @@ class CreateUser(BaseModel):
     name: str
     email: EmailStr
     password: str
-    role: str
     isLoggedIn: bool = False
 
 class LoginUser(BaseModel):
@@ -25,6 +24,7 @@ class LoginRespone(BaseModel):
     name: str
     email: str
     role: str
+    access_token: str
 
 class LogoutRespone(BaseModel):
     message: str

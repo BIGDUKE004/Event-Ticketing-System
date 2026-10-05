@@ -4,7 +4,7 @@ from fastapi import APIRouter, status, Depends
 
 from app.models.user import *
 from app.services.auth_service import AuthService
-from app.dependencies import get_user_service
+from app.dependencies import get_user_service, get_current_user
 
 router = APIRouter(prefix="/auth", tags=["SignUp/SignIn"])
 
@@ -35,6 +35,9 @@ def delete_user(user_id : UUID, service : AuthService = Depends(get_user_service
     service.delete_user(user_id)
 
 
-@router.get("/GetInformation/{user_id}", response_model=GetUserInfoRespone)
-def get_user_information(user_id : UUID, service : AuthService = Depends(get_user_service)):
-    return service.get_user_information(user_id)
+@router.get("/GetInformation", response_model=GetUserInfoRespone)
+def get_user_information(
+    current_user = Depends(get_current_user),
+    service: AuthService = Depends(get_user_service)
+):
+    return service.get_user_information(current_user.id)
