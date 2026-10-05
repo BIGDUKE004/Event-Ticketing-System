@@ -111,7 +111,7 @@ class BookingService:
         for item in booking.bookings:
             converted_item = model_booking_item.BookingItem.model_validate(item)
             converted_bookings.append(converted_item)
-        response = model_booking.UpdateBookingResponse = model_booking.UpdateBookingResponse(
+            response = model_booking.UpdateBookingResponse = model_booking.UpdateBookingResponse(
             id=str(booking.id),
             user_id=booking.user_id,
             event_id=booking.event_id,
@@ -156,3 +156,23 @@ class BookingService:
         )
 
         return response
+
+    def get_bookings_by_user(self, user_id: str) -> list[model_booking.GetBookingInformationResponse]:
+        bookings = self.__repository.get_bookings_by_user(user_id)
+
+        responses = []
+        for booking in bookings:
+            converted_bookings = []
+            for item in booking.bookings:
+                converted_item = model_booking_item.BookingItem.model_validate(item)
+                converted_bookings.append(converted_item)
+            responses.append(model_booking.GetBookingInformationResponse(
+                id=str(booking.id),
+                total_amount=booking.total_amount,
+                user_id=booking.user_id,
+                booking_date=booking.booking_date,
+                bookings=converted_bookings,
+                quantity=booking.quantity,
+                status=booking.status,
+            ))
+        return responses

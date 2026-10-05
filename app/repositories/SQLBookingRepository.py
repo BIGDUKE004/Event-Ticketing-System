@@ -52,3 +52,6 @@ class SQLBookingRepository(BookingRepository):
         if booking is None:
             raise HTTPException(status_code=404, detail="Booking not found")
         return booking
+
+    def get_bookings_by_user(self, user_id: str) -> List[Booking]:
+        return self.db.query(Booking).filter(Booking.user_id == user_id).all()
