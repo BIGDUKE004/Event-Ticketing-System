@@ -1,11 +1,13 @@
-from fastapi import Depends
+from uuid import UUID
+from fastapi import Depends, HTTPException, status
+from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 from app.repositories.event_repository import EventRepository
 from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
 from app.services.event_service import EventService
-
+from app.core.security import SECRET_KEY, ALGORITHM, oauth2_scheme
 from app.repositories.booking_repository import BookingRepository
 from app.services.booking_service import BookingService
 from app.repositories.SQLEventRepository import SQLEventRepository
@@ -105,4 +107,39 @@ def get_ticket_type_service(
     return TicketTypeService(
         repository=ticket_type_repository
     )
+
+def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    user_repository: UserRepository = Depends(get_user_repository)
+):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
+        user_id = payload.get("sub")
+
+        if user_id is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token"
+            )
+
+        user = user_repository.get_user_by_id(UUID(user_id))
+
+        if user is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found"
+            )
+
+        return user
+
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials"
+        )
 

@@ -1,9 +1,13 @@
 from fastapi import HTTPException
+from app.core.security import (
+    verify_password,
+    create_access_token, hash_password
+)
 
 from app.models.user import *
 from app.repositories.user_repository import UserRepository
 from app.database_models.user import User
-
+from app.models.users_enum import UserRole
 
 class AuthService:
 
@@ -15,12 +19,13 @@ class AuthService:
             raise HTTPException(status_code=400, detail="All fields are required")
         if len(request.password) < 8:
             raise HTTPException(status_code=400, detail="Password is too short")
+        password = hash_password(request.password.strip())
         user = User(
             name=request.name.strip(),
             email=request.email.strip(),
-            password=request.password.strip(),
-            role=request.role,
-            isLoggedIn=request.isLoggedIn,
+            password=password,
+            role=UserRole.CUSTOMER,
+            isLoggedIn=False,
         )
         self.repository.save_user(user)
         response = CreateUserRespone(id=user.id, name=user.name, email=user.email, role=user.role,)
@@ -30,11 +35,24 @@ class AuthService:
         if request.password == "" or request.email == "":
             raise HTTPException(status_code=400, detail="All fields are required")
         user = self.repository.get_user_by_email(request.email.strip())
-        if user is not None and user.password == request.password.strip():
+        pass
+        if user is not None and verify_password(
+                request.password.strip(),
+                user.password
+        ):
             user.isLoggedIn = True
             self.repository.update_user(user)
-            return LoginRespone(id=user.id, name=user.name, email=user.email, role=user.role)
+            token = create_access_token(str(user.id))
+
+            return LoginRespone(
+                id=user.id,
+                name=user.name,
+                email=user.email,
+                role=user.role,
+                access_token=token,
+            )
         raise HTTPException(status_code=400, detail="Invalid Credentials")
+
 
     def logout(self, request: Logout) -> LogoutRespone:
         user = self.repository.get_user_by_email(request.email)
