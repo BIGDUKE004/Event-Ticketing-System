@@ -38,7 +38,7 @@ def create_access_token(user_id: str):
 
 
 pwd_context = CryptContext(
-    schemes=["bcrypt"],
+    schemes=["argon2"],
     deprecated="auto"
 )
 
