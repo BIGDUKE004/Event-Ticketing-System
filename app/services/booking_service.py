@@ -53,7 +53,7 @@ class BookingService:
 
         for amount in request.bookings:
             if amount.total_amount == 0:
-                raise HTTPException("Invalid amount", 400)
+                raise HTTPException(status_code=400, detail="Invalid amount")
             else:
                 total = total + amount.total_amount * amount.quantity
 
@@ -61,7 +61,7 @@ class BookingService:
 
         for quantity in request.bookings:
             if quantity.quantity == 0:
-                raise HTTPException("Invalid amount", 400)
+                raise HTTPException(status_code=400, detail="Invalid amount")
             else:
                 total_quantity = total_quantity + quantity.quantity
 
@@ -192,7 +192,7 @@ class BookingService:
             converted_item = model_booking_item.BookingItem.model_validate(item)
             converted_bookings.append(converted_item)
 
-        response = Booking.GetBookingInformationResponse(
+        response = model_booking.GetBookingInformationResponse(
             id=str(booking.id),
             total_amount=booking.total_amount,
             user_id=booking.user_id,

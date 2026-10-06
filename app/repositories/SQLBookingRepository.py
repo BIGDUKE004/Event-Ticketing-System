@@ -1,4 +1,4 @@
-from http.client import HTTPException
+from fastapi import HTTPException
 from typing import List
 from uuid import UUID
 
@@ -42,13 +42,13 @@ class SQLBookingRepository(BookingRepository):
         return self.db.query(Booking).all()
 
     def find_booking_by_id(self, booking_id: UUID) -> Booking:
-        booking = self.db.query(Booking).filter(Booking.id == booking_id).first()
+        booking = self.db.query(Booking).filter(Booking.id == str(booking_id)).first()
         if booking is None:
             raise HTTPException(status_code=404, detail="Booking not found")
         return booking
 
     def get_booking_information(self, booking_id: UUID) -> Booking:
-        booking = self.db.query(Booking).filter(Booking.id == booking_id).first()
+        booking = self.db.query(Booking).filter(Booking.id == str(booking_id)).first()
         if booking is None:
             raise HTTPException(status_code=404, detail="Booking not found")
         return booking
