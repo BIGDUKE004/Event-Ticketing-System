@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status, Depends
-
+from uuid import UUID
 from app.core.security import get_current_user
 from app.models.booking import Booking
 from app.services.booking_service import BookingService
@@ -41,16 +41,16 @@ def update(
 
 
 @router.get(
-    "/get_booking_information",
-    response_model=Booking.GetBookingInformationResponse,
-    status_code=status.HTTP_201_CREATED
+    "/get_booking_information/{booking_id}",
+    response_model=Booking.GetBookingInformationResponse
 )
 def get_booking(
-    request: Booking.GetBookingInformation,
+    booking_id: UUID,
     service: BookingService = Depends(get_booking_service)
 ):
-    return service.get_booking_information(request)
-
+    return service.get_booking_information(
+        Booking.GetBookingInformation(id=booking_id)
+    )
 
 @router.delete(
     "/delete_booking",
