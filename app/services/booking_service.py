@@ -118,7 +118,7 @@ class BookingService:
 
         for amount in request.bookings:
             if amount.total_amount == 0:
-                raise HTTPException("Invalid amount", 400)
+                raise HTTPException(status_code=400, detail="Invalid amount")
             else:
                 total = total + amount.total_amount * amount.quantity
 
